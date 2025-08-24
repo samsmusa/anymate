@@ -3,7 +3,6 @@ from saas import models, utils
 
 def default_context(request):
     """Global context available in all templates."""
-    print(utils.get_routes_from_app("facebook"))
     if request.path.startswith("/dashboard/"):
         is_customer = request.user.is_authenticated and request.user.groups.filter(name="customer").exists()
         if is_customer:
@@ -21,10 +20,8 @@ def default_context(request):
 
         services = list(services_qs)
         for service in services:
-            print(service.name.lower(), utils.get_routes_from_app(service.name.lower()))
-            service.routes = utils.get_routes_from_app(service.name.lower())[routes_key]
+            service.routes = utils.get_routes_from_app(service.name.lower(), routes_key)
 
-        print(services)
 
         return {
             "context_subscribed_services": services,

@@ -14,16 +14,6 @@ urlpatterns = [
         views.DashboardServiceRequestsView.as_view(),
         name="dashboard_service_requests",
     ),
-    path(
-        "dashboard/manage-service/<int:subscription_id>/",
-        views.DashboardServiceManageView.as_view(),
-        name="dashboard_service_manage",
-    ),
-    re_path(
-        r"^dashboard/manage-service/(?P<subscriptone_id>\d+)(?:/(?P<page_name>\w+))?/?$",
-        views.DashboardServiceRequestsView.as_view(),
-        name="dashboard_service_manage",
-    ),
     path("signup/", views.signup_view, name="signup"),
     path("login/", views.login_view, name="login"),
 

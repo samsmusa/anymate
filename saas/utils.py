@@ -1,11 +1,12 @@
 import importlib
 
-def get_routes_from_app(app_name: str):
+def get_routes_from_app(app_name: str, attrib="CLIENT_ROUTE", default=None):
     """
-    Dynamically import <app_name>.routes and return CLIENT_ROUTE.
     """
+    if default is None:
+        default = []
     try:
         module = importlib.import_module(f"{app_name}.routes")
-        return getattr(module, "CLIENT_ROUTE", [])
+        return getattr(module, attrib, default)
     except ModuleNotFoundError:
         return []

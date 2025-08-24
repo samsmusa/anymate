@@ -47,51 +47,52 @@
                         </a>
                     </li>
 
-                    {% if is_customer %}
-                        <li>
-                            <details class="group">
-                                <summary class="cursor-pointer">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    </svg>
-                                    Manage Services
-                                </summary>
-                                <ul class="ml-6 mt-2 space-y-1">
-                                    {% for service in context_subscribed_services %}
-                                        {% if service.routes %}
-                                            <li>
-                                                <details class="group/nested">
-                                                    <summary class="cursor-pointer text-sm flex items-center gap-2">
-                                                        {{ service.name }}
-                                                    </summary>
+                    <li>
+                        <details class="group">
+                            <summary class="cursor-pointer">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Manage Services
+                            </summary>
+                            <ul class="ml-6 mt-2 space-y-1">
+                                {% for service in context_subscribed_services %}
+                                    {% if service.routes %}
+                                        <li>
+                                            <details class="group/nested">
+                                                <summary class="cursor-pointer text-sm flex items-center gap-2">
+                                                    {{ service.icon|safe }}
+                                                    {{ service.name }}
+                                                </summary>
 
-                                                    <ul class="ml-6 mt-2 space-y-1">
-                                                        {% for item in service.routes %}
-                                                            <li>
-                                                                <a href="/dashboard/manage-service/{{ service.id }}{{ item.url }}"
-                                                                   class="text-sm block py-1 px-2 rounded hover:bg-base-300">
-                                                                    {{ item.name }}
-                                                                </a>
-                                                            </li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                </details>
-                                            </li>
-                                        {% else %}
-                                            <li>
-                                                <a href="#" class="text-sm flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300">
-                                                        {{ service.name }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </details>
-                        </li>
-                    {% endif %}
+                                                <ul class="ml-6 mt-2 space-y-1">
+                                                    {% for item in service.routes %}
+                                                        <li>
+                                                            <a href="/dashboard/manage-service/{{ item.url }}"
+                                                               class="text-sm block py-1 px-2 rounded hover:bg-base-300">
+                                                                {{ service.icon|safe }}
+                                                                {{ item.name }}
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </details>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <a href="#"
+                                               class="text-sm flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300">
+                                                {{ service.name }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </details>
+                    </li>
                     {% if request.user.is_superuser %}
                         <li>
                             <a href="{% url 'dashboard_service_requests' %}" class="rounded-lg">

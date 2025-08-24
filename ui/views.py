@@ -279,32 +279,3 @@ class DashboardServiceRequestsView(LoginRequiredMixin, UserPassesTestMixin, View
 
         return redirect("dashboard_service_requests")
 
-
-class DashboardServiceManageView(LoginRequiredMixin, View):
-    """Handles listing, updating, and deleting subscriptions in the dashboard"""
-
-    login_url = "login"
-
-    def get(self, request, *args, **kwargs):
-        subscription_id = kwargs.get("subscription_id")
-        subscription_ins = get_object_or_404(Subscription, id=subscription_id, user=request.user)
-        kwargs.update({"subscription_ins": subscription_ins})
-        if subscription_ins.service.name=="store":
-            return StoreView.as_view()(request, *args, **kwargs)
-        return HttpResponse("Unhandled service type", status=400)
-
-
-class StoreView(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        subscription_ins = kwargs.get("subscription_ins")
-        page_name = kwargs.get("page_name")
-        if page_name:
-            template = filter(lambda x: x["path"] == f"/{page_name}", subscription_ins.service.config.sidebar)
-            if template:
-                return render(request, template[0]["template"], {})
-            else:
-                return HttpResponse("Unhandled service type", status=400)
-        template = filter(lambda x: x["path"] == f"/", subscription_ins.service.config.sidebar)
-        if template:
-            return render(request, "")
-        return HttpResponse("Unhandled service type", status=400)

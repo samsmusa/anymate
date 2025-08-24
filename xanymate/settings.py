@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ["*"]
 
 APPS = [
     "facebook",
-    "store"
+    "store",
 ]
 
 INSTALLED_APPS = [

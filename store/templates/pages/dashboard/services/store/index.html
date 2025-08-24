@@ -1,0 +1,331 @@
+{% extends "core/base_dashboard.html" %}
+
+{% block outlet %}
+    <div class="min-h-screen bg-base-100">
+        <!-- Header Section -->
+        <div class="bg-gradient-to-r from-primary to-secondary text-primary-content p-8 rounded-lg mb-8">
+            <div class="max-w-4xl">
+                <h1 class="text-4xl font-bold mb-4">
+                    <svg class="inline w-10 h-10 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Services Dashboard
+                </h1>
+                <p class="text-lg opacity-90">Manage and monitor all your automation services</p>
+                <div class="stats bg-base-100 shadow mt-6 text-base-content">
+                    <div class="stat">
+                        <div class="stat-figure text-primary">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-title">Total Services</div>
+                        <div class="stat-value text-primary">{{ total_services }}</div>
+                        <div class="stat-desc">Available automations</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="flex flex-col md:flex-row gap-4 mb-8">
+            <div class="flex-1">
+                <form method="GET" class="form-control">
+                    <div class="input-group">
+                        <input
+                                type="text"
+                                name="search"
+                                value="{{ search_query }}"
+                                placeholder="Search services..."
+                                class="input input-bordered flex-1"
+                        />
+                        <button type="submit" class="btn btn-primary">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {% if services.has_other_pages %}
+                <div class="flex justify-center">
+                    <div class="join">
+                        {% if services.has_previous %}
+                            <a href="?page=
+
+
+
+
+
+
+
+
+
+
+                                    {{ services.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                               class="join-item btn">«</a>
+                        {% else %}
+                            <button class="join-item btn btn-disabled">«</button>
+                        {% endif %}
+
+                        {% for num in services.paginator.page_range %}
+                            {% if services.number == num %}
+                                <button class="join-item btn btn-active">{{ num }}</button>
+                            {% else %}
+                                <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                                   class="join-item btn">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if services.has_next %}
+                            <a href="?page=
+
+
+
+
+
+
+
+
+
+
+                                    {{ services.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                               class="join-item btn">»</a>
+                        {% else %}
+                            <button class="join-item btn btn-disabled">»</button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+            {% if request.user.is_superuser %}
+                <button class="btn btn-success gap-2" onclick="add_service_modal.showModal()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Add New Service
+                </button>
+            {% endif %}
+        </div>
+
+        <!-- Services Grid -->
+        {% if services %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+                {% for service in services %}
+                    <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-all duration-300 border border-base-300 relative">
+                        {% if service.subscribed %}
+
+                            <div class="badge badge-soft badge-success absolute right-0 top-2">Subscribed</div>
+                        {% endif %}
+                        <div class="card-body p-6">
+                            <!-- Service Icon -->
+                            <div class="avatar placeholder mb-4">
+                                <div class="bg-primary text-primary-content rounded-full w-16">
+                                    <span class="text-2xl font-bold">{{ service.name|first|upper }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Service Info -->
+                            <h2 class="card-title text-lg font-bold mb-2 line-clamp-2">{{ service.name }}</h2>
+                            <p class="text-base-content/70 text-sm mb-4 line-clamp-3">
+                                {% if service.description %}
+                                    {{ service.description }}
+                                {% else %}
+                                    No description available for this service.
+                                {% endif %}
+                            </p>
+
+                            <!-- Service Status -->
+                            <div class="flex items-center justify-between mb-4">
+                                {% if service.active %}
+                                    <div class="badge badge-success">
+                                        <svg class="size-[1em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt">
+                                                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor"
+                                                        stroke-linecap="square" stroke-miterlimit="10"
+                                                        stroke-width="2"></circle>
+                                                <polyline points="7 13 10 16 17 8" fill="none" stroke="currentColor"
+                                                          stroke-linecap="square" stroke-miterlimit="10"
+                                                          stroke-width="2"></polyline>
+                                            </g>
+                                        </svg>
+                                        Active
+                                    </div>
+                                {% else %}
+                                    <div class="badge badge-error">
+                                        <svg class="size-[1em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <g fill="currentColor">
+                                                <rect x="1.972" y="11" width="20.056" height="2"
+                                                      transform="translate(-4.971 12) rotate(-45)" fill="currentColor"
+                                                      stroke-width="0"></rect>
+                                                <path d="m12,23c-6.065,0-11-4.935-11-11S5.935,1,12,1s11,4.935,11,11-4.935,11-11,11Zm0-20C7.038,3,3,7.037,3,12s4.038,9,9,9,9-4.037,9-9S16.962,3,12,3Z"
+                                                      stroke-width="0" fill="currentColor"></path>
+                                            </g>
+                                        </svg>
+                                        Not Available
+                                    </div>
+                                {% endif %}
+                                <div class="text-xs text-base-content/50">
+                                    {{ service.created_at|date:"M d, Y" }}
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="card-actions flex justify-end items-center">
+                                {% if is_customer and not service.subscribed %}
+
+                                    <form method="POST" class="flex items-center justify-center">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="subscribe">
+                                        <input type="hidden" name="service_id" value="{{ service.id }}">
+                                        <button
+                                                class="btn bg-[#03C755] text-white
+                                                {% if not service.active %}btn-disabled{% endif %}">
+                                            Subscribe
+                                        </button>
+                                    </form>
+                                {% endif %}
+                                <div class="dropdown dropdown-end">
+                                    <label tabindex="0" class="btn btn-ghost btn-sm">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                        </svg>
+                                    </label>
+                                    <ul tabindex="0"
+                                        class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                        <li><a href="#" class="text-info">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                            </svg>
+                                            View Details
+                                        </a></li>
+                                        <li><a href="#" class="text-warning">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                            Configure
+                                        </a></li>
+                                        {% if request.user.is_superuser %}
+                                            <li><a href="#" class="text-error">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                     viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                          stroke-width="2"
+                                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                                Delete
+                                            </a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+
+
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <div class="max-w-md mx-auto">
+                    <div class="mb-8">
+                        <svg class="mx-auto w-24 h-24 text-base-content/30" fill="none" stroke="currentColor"
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-base-content mb-2">
+                        {% if search_query %}
+                            No services found
+                        {% else %}
+                            No services available
+                        {% endif %}
+                    </h3>
+                    <p class="text-base-content/70 mb-6">
+                        {% if search_query %}
+                            Try adjusting your search terms or browse all services.
+                        {% else %}
+                            Get started by adding your first automation service.
+                        {% endif %}
+                    </p>
+                    {% if search_query %}
+                        <a href="{% url 'dashboard_services' %}" class="btn btn-primary">View All Services</a>
+                    {% elif request.user.is_superuser %}
+                        <button class="btn btn-primary" onclick="add_service_modal.showModal()">Add Your First Service
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Add Service Modal (for superusers) -->
+    {% if request.user.is_superuser %}
+        <dialog id="add_service_modal" class="modal">
+            <form method="dialog" class="modal-box w-11/12 max-w-2xl">
+                <h3 class="font-bold text-lg mb-4">Add New Service</h3>
+
+                <div class="form-control w-full mb-4">
+                    <label class="label">
+                        <span class="label-text">Service Name</span>
+                    </label>
+                    <input type="text" placeholder="Enter service name" class="input input-bordered w-full"/>
+                </div>
+
+                <div class="form-control w-full mb-4">
+                    <label class="label">
+                        <span class="label-text">Description</span>
+                    </label>
+                    <textarea class="textarea textarea-bordered h-24" placeholder="Describe your service..."></textarea>
+                </div>
+
+                <div class="form-control w-full mb-6">
+                    <label class="label">
+                        <span class="label-text">Workflow Configuration</span>
+                    </label>
+                    <textarea class="textarea textarea-bordered h-32 font-mono text-sm"
+                              placeholder='{"steps": [], "triggers": []}'></textarea>
+                    <label class="label">
+                        <span class="label-text-alt">Enter JSON configuration for the workflow</span>
+                    </label>
+                </div>
+
+                <div class="modal-action">
+                    <button type="button" class="btn" onclick="add_service_modal.close()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Service</button>
+                </div>
+            </form>
+            <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+            </form>
+        </dialog>
+    {% endif %}
+
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+{% endblock %}
