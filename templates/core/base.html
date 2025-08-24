@@ -1,0 +1,42 @@
+{% load static %}
+{% load i18n %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-100" data-theme="cupcake">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}My SaaS App{% endblock %}</title>
+    <meta name="description"
+          content="{% block meta_description %}SaaS platform powered by Django + Tailwind{% endblock %}">
+
+
+     {% tailwind_css %}
+
+
+    {% block head %}{% endblock %}
+</head>
+
+<body class="min-h-full flex flex-col">
+
+{% include 'core/navbar.html' %}
+
+
+<main class="mx-auto w-full">
+    {% block content %}
+
+    {% endblock %}
+</main>
+
+
+<footer class="bg-white border-t py-4 mt-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+        © {{ year|default:2025 }} My SaaS. All rights reserved.
+    </div>
+</footer>
+
+
+{% block scripts %}{% endblock %}
+</body>
+</html>
