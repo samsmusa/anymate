@@ -28,6 +28,10 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
+APPS = [
+    "facebook",
+    "store"
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -42,7 +46,7 @@ INSTALLED_APPS = [
     'theme',
     'ui',
     'saas',
-]
+]+ APPS
 if DEBUG:
     INSTALLED_APPS += ['django_browser_reload']
 

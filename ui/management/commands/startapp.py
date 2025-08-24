@@ -1,5 +1,6 @@
-from django.core.management.commands.startapp import Command as StartAppCommand
 import os
+
+from django.core.management.commands.startapp import Command as StartAppCommand
 
 SERVICE_CONFIG_TEMPLATE = '''from django.apps import AppConfig
 from django.db.utils import OperationalError
@@ -23,6 +24,11 @@ class {class_name}(AppConfig):
         except OperationalError:
             # DB not ready during migration
             pass
+'''
+
+SERVICE_ROUTE_CONFIG_TEMPLATE = '''
+CLIENT_ROUTE = {}
+ADMIN_ROUTE = {}
 '''
 
 class Command(StartAppCommand):
@@ -54,6 +60,13 @@ class Command(StartAppCommand):
                     verbose_name=verbose_name
                 ))
 
-            self.stdout.write(
-                self.style.SUCCESS(f"✔ Created service app '{app_name}' with auto-registration in Service model")
-            )
+
+        if options["service"]:
+            app_dir = os.path.join(os.getcwd(), app_name)
+            apps_file = os.path.join(app_dir, "routes.py")
+            with open(apps_file, "w") as f:
+                f.write(SERVICE_ROUTE_CONFIG_TEMPLATE)
+
+        self.stdout.write(
+            self.style.SUCCESS(f"✔ Created service app '{app_name}' with auto-registration in Service model")
+        )
