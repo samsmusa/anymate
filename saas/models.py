@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+
 class Status(models.IntegerChoices):
     """
     Enumeration for subscription, order, or workflow statuses.
@@ -9,6 +11,7 @@ class Status(models.IntegerChoices):
     PENDING = 1, _("Pending")
     CANCELLED = 2, _("Cancelled")
     CONFIRMED = 3, _("Confirmed")
+
 
 class Service(models.Model):
     """
@@ -26,7 +29,6 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
-
 
 
 class Subscription(models.Model):
@@ -49,54 +51,3 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"{self.user.username} → {self.service.name}"
-
-
-class UserCommerceCollection(models.Model):
-    """
-    Represents a collection of products owned by a user.
-    """
-    name = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commerce_collections")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = ("name", "user")
-        ordering = ["name"]
-
-    def __str__(self):
-        return f"{self.name} ({self.user.username})"
-
-
-class Product(models.Model):
-    """
-    Represents a product within a user's commerce collection.
-    """
-    title = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    collection = models.ForeignKey(
-        UserCommerceCollection, on_delete=models.CASCADE, related_name="products"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
-
-    class Meta:
-        unique_together = ("title", "collection")
-        ordering = ["title"]
-
-    def __str__(self):
-        return f"{self.title} ({self.collection.name})"
-
-class UserServiceCollection(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="service_collections")
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="service_collections")
-    collection = models.ForeignKey(
-        UserCommerceCollection, on_delete=models.CASCADE, related_name="service_collections"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = ("user", "service", "collection")
