@@ -11,6 +11,7 @@ public_router.register(r'services', views.PublicServicesViewSet, basename='publi
 private_router.register(r'subscriptions', views.PrivateServiceSubscriptionViewSet, basename='private-service')
 
 protected_router.register(r'services', views.ProtectedServicesViewSet, basename='protected-service')
+protected_router.register(r'subscriptions', views.ProtectedServiceSubscriptionViewSet, basename='protected-subscription')
 
 urlpatterns = [
     path(r'public/', include(public_router.urls)),

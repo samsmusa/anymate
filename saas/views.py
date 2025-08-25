@@ -26,7 +26,7 @@ class PrivateServiceSubscriptionViewSet(viewsets.ModelViewSet):
     # filterset_class = filters.ServiceFilter
 
     def get_queryset(self):
-        return models.Subscription.objects.filter(user=self.request.user)
+        return models.Subscription.objects.filter(created_by=self.request.user)
 
 
 @extend_schema(tags=["protected-services"])
@@ -38,3 +38,17 @@ class ProtectedServicesViewSet(viewsets.ModelViewSet):
     lookup_field = 'pk'
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.ServiceFilter
+
+
+@extend_schema(tags=["Protected-service-subscriptions"])
+class ProtectedServiceSubscriptionViewSet(viewsets.ModelViewSet):
+    http_method_names = ('get', 'put', 'patch', "delete")
+    queryset = models.Subscription.objects.all()
+    serializer_class = protected_serializers.ProtectedSubscriptionSerializer
+    lookup_field = 'pk'
+    permission_classes = [permissions.IsAdmin]
+    filter_backends = [DjangoFilterBackend]
+    # filterset_class = filters.ServiceFilter
+
+
+

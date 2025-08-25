@@ -50,10 +50,9 @@ INSTALLED_APPS = [
                      'django.contrib.staticfiles',
 
                      # Third-party
-
+                     'django_userforeignkey',
                      "rest_framework",
                      "corsheaders",
-                     'django_browser_reload',
                      'drf_spectacular',
                      'django_filters',
                      'tailwind',
@@ -71,6 +70,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_userforeignkey.middleware.UserForeignKeyMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

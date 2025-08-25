@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
+from xanymate import mixins
 
 class Status(models.IntegerChoices):
     """
@@ -31,12 +31,11 @@ class Service(models.Model):
         return self.name
 
 
-class Subscription(models.Model):
+class Subscription(mixins.TimeStampedMixin, mixins.UserTrackingMixin):
     """
     Represents a user's subscription to a particular service.
     """
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="subscriptions")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="subscriptions")
     active = models.BooleanField(default=True)
     status = models.IntegerField(
         choices=Status.choices,
@@ -48,8 +47,8 @@ class Subscription(models.Model):
     ended_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        unique_together = ('service', 'user')
+        unique_together = ('service', 'created_by')
 
     def __str__(self):
-        return f"{self.user.username} → {self.service.name}"
+        return f"{self.created_by.username} → {self.service.name}"
 

@@ -6,12 +6,17 @@ from saas import models
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Service
-        fields = ("id", "name", "description")
+        exclude = ["workflow", "config"]
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    service = ServiceSerializer()
+    service = ServiceSerializer(read_only=True)
+    service_id = serializers.PrimaryKeyRelatedField(
+        queryset=models.Service.objects.all(),
+        source="service",
+        write_only=True
+    )
 
     class Meta:
         model = models.Subscription
-        fields = ("id", "service")
+        fields = ("id", "service", "service_id")
