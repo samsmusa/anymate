@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
-import environ
 import os
+from pathlib import Path
+
+import environ
 
 env = environ.Env(
     DEBUG=(bool, False)
@@ -29,7 +30,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = 'django-insecure-k&=y=9aj2gc3)3-ke-#w_^w==#=tcf-iy4h8#rrt&qyzk4--tb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = DEBUG = env('DEBUG')
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ["*"]
 
@@ -41,19 +42,26 @@ APPS = [
 ]
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+                     'django.contrib.admin',
+                     'django.contrib.auth',
+                     'django.contrib.contenttypes',
+                     'django.contrib.sessions',
+                     'django.contrib.messages',
+                     'django.contrib.staticfiles',
 
-    # Third-party
-    'tailwind',
-    'theme',
-    'ui',
-    'saas',
-]+ APPS
+                     # Third-party
+
+                     "rest_framework",
+                     "corsheaders",
+                     'django_browser_reload',
+                     'drf_spectacular',
+                     'django_filters',
+                     'tailwind',
+                     'theme',
+                     'ui',
+                     'saas',
+
+                 ] + APPS
 if DEBUG:
     INSTALLED_APPS += ['django_browser_reload']
 
@@ -147,3 +155,29 @@ LOGOUT_REDIRECT_URL = '/login/'
 AUTOMATION_API_BASE = env('AUTOMATION_API_BASE')
 AUTOMATE_SERVICE_API_KEY = env('AUTOMATE_SERVICE_API_KEY')
 AUTOMATE_SERVICE_HEADER_KEY = env('AUTOMATE_SERVICE_HEADER_KEY')
+
+CORS_ALLOWED_ORIGINS = [
+    "https://e-kassa.fi",
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
+}
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Your Project API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    },
+}
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
