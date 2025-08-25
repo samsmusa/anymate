@@ -15,6 +15,16 @@ class IsOwnerOrReadOnly(BasePermission):
         return obj.user == request.user
 
 
+class IsOwner(BasePermission):
+    """
+    Object-level permission to allow only owners to edit/delete.
+    Assumes the model instance has a `created_by` attribute.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return obj.created_by == request.user
+
+
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.is_superuser

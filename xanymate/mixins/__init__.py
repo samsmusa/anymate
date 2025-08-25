@@ -20,6 +20,7 @@ class UserTrackingMixin(models.Model):
         blank=True,
         related_name="%(class)s_created")
     updated_by = UserForeignKey(
+        auto_user_add=True,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
