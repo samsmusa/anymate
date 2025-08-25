@@ -9,6 +9,7 @@ class StoreCollection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     vectorized_field = models.CharField(max_length=100)
     payload_schema = models.JSONField(default=dict)
+    request_schema = models.JSONField(default=dict)
 
     def __str__(self):
         return self.name
@@ -27,3 +28,4 @@ class ServiceStoreIntegration(models.Model):
 
     class Meta:
         unique_together = ("service", "collection", "user")
+
