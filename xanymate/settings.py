@@ -11,10 +11,17 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -22,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-k&=y=9aj2gc3)3-ke-#w_^w==#=tcf-iy4h8#rrt&qyzk4--tb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ["*"]
 
@@ -136,3 +143,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TAILWIND_APP_NAME = 'theme'
 LOGOUT_REDIRECT_URL = '/login/'
+
+AUTOMATION_API_BASE = env('AUTOMATION_API_BASE')
+AUTOMATE_SERVICE_API_KEY = env('AUTOMATE_SERVICE_API_KEY')
+AUTOMATE_SERVICE_HEADER_KEY = env('AUTOMATE_SERVICE_HEADER_KEY')

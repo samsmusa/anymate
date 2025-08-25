@@ -43,6 +43,7 @@ class Subscription(models.Model):
         default=Status.PENDING,
         help_text="Current subscription status"
     )
+    workflow_id = models.CharField(max_length=255, blank=True, null=True, help_text="workflow ID")
     started_at = models.DateTimeField(auto_now_add=True)
     ended_at = models.DateTimeField(null=True, blank=True)
 
@@ -51,3 +52,4 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"{self.user.username} → {self.service.name}"
+
