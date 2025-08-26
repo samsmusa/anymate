@@ -7,13 +7,10 @@ from automation import utils
 
 @receiver(post_save, sender=models.Subscription)
 def handle_subscription_save(sender, instance, created, **kwargs):
-    """
-    Manage n8n workflows whenever subscriptions are created or updated.
-    """
     try:
         # TODO: it will move to post method
         workflow = instance.service.workflow
-        workflow["name"] = instance.service.name+"---"+instance.user.username
+        workflow["name"] = instance.service.name+"---"+instance.created_by.username
         if created:
             response = utils.create_workflow(workflow)
             instance.workflow_id = response.get("id")
@@ -33,12 +30,9 @@ def handle_subscription_save(sender, instance, created, **kwargs):
 
 @receiver(pre_delete, sender=models.Subscription)
 def handle_subscription_delete(sender, instance, **kwargs):
-    """
-    Delete the workflow in n8n when a subscription is removed.
-    """
     try:
         if instance.workflow_id:
             utils.delete_workflow(instance.workflow_id)
         print("deleted subscription")
     except Exception as e:
-        print(f"❌ Failed to delete workflow {instance.workflow_id} from n8n: {e}")
+        print(f"❌ Failed to delete workflow {instance.workflow_id} from automation: {e}")

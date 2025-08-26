@@ -27,7 +27,8 @@ urlpatterns = [
     path('', include('ui.urls')),
     path('api/v1/saas/', include('saas.urls')),
     path('api/v1/store/', include('store.urls')),
-    path('api/v1/facebook', include('facebook.urls')),
+    path('api/v1/facebook/', include('facebook.urls')),
+    path('api/v1/automation-engine/', include('automation.urls')),
 ]
 
 if settings.DEBUG:

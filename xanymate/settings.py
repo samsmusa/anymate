@@ -59,6 +59,7 @@ INSTALLED_APPS = [
                      'theme',
                      'ui',
                      'saas',
+                     'automation',
 
                  ] + APPS
 if DEBUG:
@@ -107,6 +108,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    "automate": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("AUTOMATION_DB_NAME"),
+        "USER": env("AUTOMATION_DB_USER"),
+        "PASSWORD": env("AUTOMATION_DB_PASSWORD"),
+        "HOST": env("AUTOMATION_DB_HOST"),
+        "PORT": env("AUTOMATION_DB_PORT"),
+        "OPTIONS": {"options": "-c search_path=public"}
     }
 }
 
@@ -177,7 +187,14 @@ SPECTACULAR_SETTINGS = {
         "deepLinking": True,
         "persistAuthorization": True,
         "displayOperationId": True,
+        'docExpansion': 'none'
     },
+    'TAGS': [
+        {'name': 'Protected', 'description': 'Admin related APIs'},
+        {'name': 'Private', 'description': 'User related APIs'},
+        {'name': 'Public', 'description': 'Open APIs'},
+    ],
 }
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+DATABASE_ROUTERS = ["automation.routers.AutomationRouter"]

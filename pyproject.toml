@@ -16,4 +16,5 @@ dependencies = [
     "drf-nested-routers>=0.94.2",
     "drf-spectacular>=0.28.0",
     "markdown>=3.8.2",
+    "psycopg2>=2.9.10",
 ]

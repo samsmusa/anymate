@@ -6,7 +6,7 @@ from saas import models, serializers, filters, protected_serializers
 from xanymate import permissions
 
 
-@extend_schema(tags=["public-services"])
+@extend_schema(tags=["Public", "Public-services"])
 class PublicServicesViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Service.objects.all()
     serializer_class = serializers.ServiceSerializer
@@ -15,7 +15,7 @@ class PublicServicesViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = filters.ServiceFilter
 
 
-@extend_schema(tags=["private-service-subscriptions"])
+@extend_schema(tags=["Private", "Private-service-subscriptions"])
 class PrivateServiceSubscriptionViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', 'put', 'patch', "post")
     queryset = models.Subscription.objects.all()
@@ -29,7 +29,7 @@ class PrivateServiceSubscriptionViewSet(viewsets.ModelViewSet):
         return models.Subscription.objects.filter(created_by=self.request.user)
 
 
-@extend_schema(tags=["protected-services"])
+@extend_schema(tags=["Protected", "Protected-services"])
 class ProtectedServicesViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', 'put', 'patch')
     queryset = models.Service.objects.all()
@@ -48,7 +48,3 @@ class ProtectedServiceSubscriptionViewSet(viewsets.ModelViewSet):
     lookup_field = 'pk'
     permission_classes = [permissions.IsAdmin]
     filter_backends = [DjangoFilterBackend]
-    # filterset_class = filters.ServiceFilter
-
-
-

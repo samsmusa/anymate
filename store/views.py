@@ -6,7 +6,7 @@ from store import models, serializers, protected_serializers
 from xanymate import permissions
 
 
-@extend_schema(tags=["private-store-collection"])
+@extend_schema(tags=["Private", "Private-store-collection"])
 class PrivateStoreCollectionViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', "post", "delete")
     queryset = models.StoreCollection.objects.all()
@@ -19,7 +19,7 @@ class PrivateStoreCollectionViewSet(viewsets.ModelViewSet):
         return models.StoreCollection.objects.filter(created_by=self.request.user)
 
 
-@extend_schema(tags=["private-store-artifact"])
+@extend_schema(tags=["Private", "Private-store-artifact"])
 class PrivateStoreArtifactViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', "post", "put", "delete")
     queryset = models.StoreArtifact.objects.all()
@@ -32,7 +32,7 @@ class PrivateStoreArtifactViewSet(viewsets.ModelViewSet):
         return models.StoreArtifact.objects.filter(created_by=self.request.user)
 
 
-@extend_schema(tags=["protected-store-collection"])
+@extend_schema(tags=["Protected", "Protected-store-collection"])
 class ProtectedStoreCollectionViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', 'post', "delete")
     queryset = models.StoreCollection.objects.all()
@@ -42,7 +42,7 @@ class ProtectedStoreCollectionViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
 
 
-@extend_schema(tags=["protected-store-artifact"])
+@extend_schema(tags=["Protected", "Protected-store-artifact"])
 class ProtectedStoreArtifactViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', "post", "put", "delete")
     queryset = models.StoreArtifact.objects.all()

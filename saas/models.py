@@ -31,7 +31,7 @@ class Service(models.Model):
         return self.name
 
 
-class Subscription(mixins.TimeStampedMixin, mixins.UserTrackingMixin):
+class Subscription(mixins.UserTrackingMixin, mixins.TimeStampedMixin):
     """
     Represents a user's subscription to a particular service.
     """
