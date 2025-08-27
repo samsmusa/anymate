@@ -2,7 +2,9 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from store import models, serializers, protected_serializers
+from rest_framework.response import Response
+
+from store import models, serializers, protected_serializers, permissions as store_permissions
 from xanymate import permissions
 from django.db.models import Q, Count
 
@@ -30,6 +32,30 @@ class PrivateStoreArtifactViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return models.StoreArtifact.objects.filter(created_by=self.request.user)
+
+@extend_schema(tags=["Private", "Private-store-integration"])
+class PrivateCollectionIntegrationViewSet(viewsets.ModelViewSet):
+    http_method_names = ('get', "post", "delete")
+    queryset = models.ServiceStoreIntegration.objects.all()
+    serializer_class = serializers.ServiceStoreIntegrationSerializer
+    lookup_field = 'pk'
+    permission_classes = [permissions.IsCustomer, permissions.IsOwner]
+    filter_backends = [DjangoFilterBackend]
+
+    def get_queryset(self):
+        return models.ServiceStoreIntegration.objects.filter(created_by=self.request.user)
+
+@extend_schema(tags=["Private", "Private-store-artifact-request"])
+class PrivateStoreArtifactRequestViewSet(viewsets.ModelViewSet):
+    http_method_names = ('get', "put")
+    queryset = models.StoreArtifactRequest.objects.all()
+    serializer_class = serializers.StoreArtifactRequestSerializer
+    lookup_field = 'pk'
+    permission_classes = [permissions.IsCustomer, store_permissions.IsSubscriptionOwner]
+    filter_backends = [DjangoFilterBackend]
+
+    def get_queryset(self):
+        return models.StoreArtifactRequest.objects.select_related("integration").filter(integration__created_by=self.request.user)
 
 
 @extend_schema(tags=["Protected", "Protected-store-collection"])

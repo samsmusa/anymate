@@ -52,3 +52,10 @@ class Subscription(mixins.UserTrackingMixin, mixins.TimeStampedMixin):
     def __str__(self):
         return f"{self.created_by.username} → {self.service.name}"
 
+
+class SubscriptionSecret(mixins.UserTrackingMixin):
+    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, related_name="secrets")
+    secrets = models.JSONField(default=dict, help_text="Store secret configuration as JSON")
+
+    def __str__(self):
+        return self.subscription.service.name

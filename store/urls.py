@@ -8,6 +8,8 @@ protected_router = routers.DefaultRouter()
 
 private_router.register(r'collections', views.PrivateStoreCollectionViewSet, basename='private-store-collection')
 private_router.register(r'artifacts', views.PrivateStoreArtifactViewSet, basename='private-store-artifact')
+private_router.register(r'integration', views.PrivateCollectionIntegrationViewSet, basename='private-store-integration')
+private_router.register(r'artifacts-requests', views.PrivateStoreArtifactRequestViewSet, basename='private-store-artifact-request')
 
 protected_router.register(r'collections', views.ProtectedStoreCollectionViewSet, basename='protected-store-collection')
 protected_router.register(r'artifacts', views.ProtectedStoreArtifactViewSet, basename='protected-store-artifact')
