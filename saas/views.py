@@ -1,10 +1,9 @@
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import permissions
 from drf_spectacular.utils import extend_schema, OpenApiTypes, OpenApiResponse
+from rest_framework import permissions
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from saas import models, serializers, filters, protected_serializers, utils
 from saas.routes import ADMIN_ROUTE, CLIENT_ROUTE
@@ -18,7 +17,6 @@ class PublicServicesViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'pk'
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.ServiceFilter
-
 
 
 class ServiceSidebarView(APIView):
@@ -53,7 +51,6 @@ class ServiceSidebarView(APIView):
             services = models.Service.objects.all()
             for service in services:
                 app_label = service.name.lower()
-                print(app_label)
                 route = utils.get_routes_from_app(app_label, attrib, default=None)
                 if route:
                     sidebar["Manage Services"]["children"].append(route)
