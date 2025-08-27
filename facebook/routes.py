@@ -10,11 +10,25 @@ CLIENT_ROUTE = {
             [
                 {
                     "title": "Overview",
-                    "url": "#",
+                    "url": "/user-dashboard/manage-service/facebook",
                     "icon": "SquareTerminal",
                     "isActive": True,
 
-                }
+                },
+                {
+                    "title": "Settings",
+                    "url": "/user-dashboard/manage-service/facebook/settings",
+                    "icon": "SquareTerminal",
+                    "isActive": True,
+
+                },
+                {
+                    "title": "Artifacts",
+                    "url": "/user-dashboard/manage-service/facebook/artifacts",
+                    "icon": "SquareTerminal",
+                    "isActive": True,
+
+                },
             ]
     }
 
