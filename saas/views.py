@@ -1,10 +1,12 @@
+from copy import deepcopy
+
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiTypes, OpenApiResponse
 from rest_framework import permissions
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from copy import deepcopy
+
 from saas import models, serializers, filters, protected_serializers, utils
 from saas.routes import ADMIN_ROUTE, CLIENT_ROUTE
 from xanymate import permissions as xanym_permissions
