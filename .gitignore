@@ -17,3 +17,6 @@ uv.lock
 **/*/*.sqlite3
 db.sqlite3
 .env
+templates
+static
+.vite
