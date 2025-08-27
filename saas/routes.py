@@ -2,14 +2,14 @@
 ADMIN_ROUTE = {
     "Overview": {
         "title": "Overview",
-        "url": "/dashboard",
+        "url": "/admin-dashboard",
         "icon": "SquareTerminal",
         "isActive": True,
 
     },
     "Service": {
         "title": "Service",
-        "url": "/dashboard/services",
+        "url": "/admin-dashboard/services",
         "icon": "Bot",
     },
     "Manage Services": {
@@ -20,7 +20,7 @@ ADMIN_ROUTE = {
     },
     "Requests": {
         "title": "Requests",
-        "url": "/dashboard/requests",
+        "url": "/admin-dashboard/requests",
         "icon": "Settings2",
 
     },

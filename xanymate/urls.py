@@ -20,11 +20,11 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 
-from xanymate.views import current_user
+from xanymate.views import CurrentUserAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-path('api-token-auth/', obtain_auth_token),
+    path('api-token-auth/', obtain_auth_token),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
@@ -33,7 +33,7 @@ path('api-token-auth/', obtain_auth_token),
     path('api/v1/store/', include('store.urls')),
     path('api/v1/facebook/', include('facebook.urls')),
     path('api/v1/automation-engine/', include('automation.urls')),
-    path("api/v1/account/me/", current_user, name="current_user"),
+    path("api/v1/account/me/", CurrentUserAPIView.as_view(), name="current_user"),
 ]
 
 if settings.DEBUG:
