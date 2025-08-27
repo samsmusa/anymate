@@ -5,15 +5,8 @@ from ui import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('dashboard/', views.dashboard, name='dashboard'),
-    path('dashboard/profile', views.dashboard, name='dashboard_profile'),
-    # path('dashboard/services', views.dashboard_services, name='dashboard_services'),
-    path('dashboard/services', views.DashboardServiceView.as_view(), name='dashboard_services'),
-    path(
-        "dashboard/service-requests/",
-        views.DashboardServiceRequestsView.as_view(),
-        name="dashboard_service_requests",
-    ),
+    re_path(r"^dashboard/(?P<path>.*)$", views.dashboard, name="dashboard"),
+
     path("signup/", views.signup_view, name="signup"),
     path("login/", views.login_view, name="login"),
 

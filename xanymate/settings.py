@@ -52,6 +52,7 @@ INSTALLED_APPS = [
                      # Third-party
                      'django_userforeignkey',
                      "rest_framework",
+'rest_framework.authtoken',
                      "corsheaders",
                      'drf_spectacular',
                      'django_filters',

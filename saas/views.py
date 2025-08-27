@@ -4,7 +4,7 @@ from rest_framework import permissions
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from copy import deepcopy
 from saas import models, serializers, filters, protected_serializers, utils
 from saas.routes import ADMIN_ROUTE, CLIENT_ROUTE
 from xanymate import permissions as xanym_permissions
@@ -34,26 +34,29 @@ class ServiceSidebarView(APIView):
         },
     )
     def get(self, request):
-        sidebar = ADMIN_ROUTE
+        sidebar = deepcopy(ADMIN_ROUTE)  # make a copy to avoid mutation issues
         attrib = "ADMIN_ROUTE"
 
         if request.user.groups.filter(name="customer").exists():
-            sidebar = CLIENT_ROUTE
+            sidebar = deepcopy(CLIENT_ROUTE)
             attrib = "CLIENT_ROUTE"
 
-            subscriptions = models.Subscription.objects.filter(created_by=request.user)
+            subscriptions = models.Subscription.objects.filter(created_by=request.user).select_related("service")
             for subscription in subscriptions:
-                app_label = subscription.service.name
-                route = utils.get_routes_from_app(app_label, attrib, default=None)
+                route = utils.get_routes_from_app(
+                    app_label=subscription.service.name,
+                    attrib=attrib,
+                    default=None
+                )
                 if route:
-                    sidebar["Manage Services"]["children"].append(route)
+                    sidebar.setdefault("Manage Services", {}).setdefault("children", []).append(route)
+
         elif request.user.is_superuser:
             services = models.Service.objects.all()
             for service in services:
-                app_label = service.name.lower()
-                route = utils.get_routes_from_app(app_label, attrib, default=None)
+                route = utils.get_routes_from_app(service.name.lower(), attrib, None)
                 if route:
-                    sidebar["Manage Services"]["children"].append(route)
+                    sidebar.setdefault("Manage Services", {}).setdefault("children", []).append(route)
 
         return Response(sidebar)
 

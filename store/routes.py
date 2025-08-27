@@ -31,6 +31,20 @@ ADMIN_ROUTE = {
                 "icon": "SquareTerminal",
                 "isActive": True,
 
-            }
+            },
+            {
+                "title": "Collections",
+                "url": "/dashboard/collections",
+                "icon": "SquareTerminal",
+                "isActive": True,
+
+            },
+            {
+                "title": "Artifacts",
+                "url": "/dashboard/artifacts",
+                "icon": "SquareTerminal",
+                "isActive": True,
+
+            },
         ]
 }

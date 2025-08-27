@@ -20,7 +20,7 @@ ADMIN_ROUTE = {
     },
     "Requests": {
         "title": "Requests",
-        "url": "#",
+        "url": "/dashboard/requests",
         "icon": "Settings2",
 
     },
