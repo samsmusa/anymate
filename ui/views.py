@@ -49,7 +49,7 @@ class SignupForm(forms.Form):
 
 def index(request):
     """Landing page"""
-    return render(request, "pages/landing_page/index.html")
+    return render(request, "index.html")
 
 
 def login_view(request):
@@ -99,13 +99,13 @@ def signup_view(request):
 @login_required(login_url="login")
 def dashboard(request):
     """Dashboard home"""
-    return render(request, "pages/dashboard/index.html")
+    return render(request, "index.html")
 
 
 @login_required(login_url="login")
 def dashboard_profile(request):
     """Dashboard profile page"""
-    return render(request, "pages/dashboard/profile.html")
+    return render(request, "index.html")
 
 
 #
@@ -168,7 +168,7 @@ class DashboardServiceView(LoginRequiredMixin, View):
             'search_query': search_query,
             'total_services': services.count(),
         }
-        return render(request, "pages/dashboard/services.html", context)
+        return render(request, "index.html", context)
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
@@ -227,7 +227,7 @@ class DashboardServiceRequestsView(LoginRequiredMixin, UserPassesTestMixin, View
             "total_requests": subscriptions.count(),
             "status_choices": Status.choices,
         }
-        return render(request, "pages/dashboard/service_requests.html", context)
+        return render(request, "index.html", context)
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")

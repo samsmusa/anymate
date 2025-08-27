@@ -68,6 +68,7 @@ if DEBUG:
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -152,7 +153,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# settings.py
+
+# URL for static files
+STATIC_URL = '/static/'
+
+# Where Django will collect static files for production
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Additional directories to look for static files (during development)
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -177,6 +189,12 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        # or JWT
+        # "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
 }
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Your Project API',
@@ -198,3 +216,4 @@ SPECTACULAR_SETTINGS = {
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 DATABASE_ROUTERS = ["automation.routers.AutomationRouter"]
+CORS_ALLOW_ALL_ORIGINS = True
