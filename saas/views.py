@@ -1,9 +1,14 @@
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import permissions
+from drf_spectacular.utils import extend_schema, OpenApiTypes, OpenApiResponse
 
-from saas import models, serializers, filters, protected_serializers
-from xanymate import permissions
+from saas import models, serializers, filters, protected_serializers, utils
+from saas.routes import ADMIN_ROUTE, CLIENT_ROUTE
+from xanymate import permissions as xanym_permissions
 
 
 @extend_schema(tags=["Public", "Public-services"])
@@ -15,14 +20,56 @@ class PublicServicesViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = filters.ServiceFilter
 
 
+
+class ServiceSidebarView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @extend_schema(
+        tags=["Private", "Protected", "service-sidebar"],
+        summary="Get dynamic service sidebar",
+        description="Returns a dynamic sidebar structure based on the user's subscriptions and role.",
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.OBJECT,
+                description="Sidebar JSON object"
+            )
+        },
+    )
+    def get(self, request):
+        sidebar = ADMIN_ROUTE
+        attrib = "ADMIN_ROUTE"
+
+        if request.user.groups.filter(name="customer").exists():
+            sidebar = CLIENT_ROUTE
+            attrib = "CLIENT_ROUTE"
+
+            subscriptions = models.Subscription.objects.filter(created_by=request.user)
+            for subscription in subscriptions:
+                app_label = subscription.service.name
+                route = utils.get_routes_from_app(app_label, attrib, default=None)
+                if route:
+                    sidebar["Manage Services"]["children"].append(route)
+        elif request.user.is_superuser:
+            services = models.Service.objects.all()
+            for service in services:
+                app_label = service.name.lower()
+                print(app_label)
+                route = utils.get_routes_from_app(app_label, attrib, default=None)
+                if route:
+                    sidebar["Manage Services"]["children"].append(route)
+
+        return Response(sidebar)
+
+
 @extend_schema(tags=["Private", "Private-service-subscriptions"])
 class PrivateServiceSubscriptionViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', 'put', 'patch', "post")
     queryset = models.Subscription.objects.all()
     serializer_class = serializers.SubscriptionSerializer
     lookup_field = 'pk'
-    permission_classes = [permissions.IsCustomer]
+    permission_classes = [xanym_permissions.IsCustomer]
     filter_backends = [DjangoFilterBackend]
+
     # filterset_class = filters.ServiceFilter
 
     def get_queryset(self):
@@ -34,7 +81,7 @@ class ProtectedServicesViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', 'put', 'patch')
     queryset = models.Service.objects.all()
     serializer_class = protected_serializers.ProtectedServiceSerializer
-    permission_classes = [permissions.IsAdmin]
+    permission_classes = [xanym_permissions.IsAdmin]
     lookup_field = 'pk'
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.ServiceFilter
@@ -46,5 +93,5 @@ class ProtectedServiceSubscriptionViewSet(viewsets.ModelViewSet):
     queryset = models.Subscription.objects.all()
     serializer_class = protected_serializers.ProtectedSubscriptionSerializer
     lookup_field = 'pk'
-    permission_classes = [permissions.IsAdmin]
+    permission_classes = [xanym_permissions.IsAdmin]
     filter_backends = [DjangoFilterBackend]
