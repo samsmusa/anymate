@@ -1,3 +1,4 @@
+from django.urls import path
 from rest_framework_nested import routers
 
 from automation import views
@@ -14,4 +15,8 @@ private_router.register(r'workflows-statistics', views.WorkflowStatisticsViewSet
 protected_router = routers.DefaultRouter()
 
 urlpatterns = [
+                  path("workflow/entity/statistics/", views.WorkflowStatisticsView.as_view(), name="workflow-statistics"),
+                  path("workflow/entity/statistics/graph/", views.WorkflowEntityUsageGraphView.as_view(), name="workflow-statistics"),
+                  path("workflow/statistics/view", views.WorkflowDashboardView.as_view(), name="workflow-statistics"),
+                  path("workflow/statistics/graph/", views.WorkflowStatisticsGraphView.as_view(), name="workflow-statistics"),
               ] + private_router.urls

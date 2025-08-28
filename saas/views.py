@@ -1,9 +1,11 @@
 from copy import deepcopy
 
+from django.db.models import Count
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiTypes, OpenApiResponse
 from rest_framework import permissions
 from rest_framework import viewsets
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -88,6 +90,23 @@ class ProtectedServicesViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.ServiceFilter
 
+    @action(detail=False, methods=["get"], url_path="statistics")
+    def service_statistics(self, request):
+        total_services = models.Service.objects.count()
+        total_subscriptions = models.Subscription.objects.count()
+        total_integration = (
+            models.Service.objects
+            .annotate(num_integrations=Count('integrations'))
+            .aggregate(total=Count('num_integrations'))
+            .get('total', 0)
+        )
+
+        return Response({
+            "total_services": total_services,
+            "total_subscriptions": total_subscriptions,
+            "total_integration": total_integration or 0
+        })
+
 
 @extend_schema(tags=["Protected-service-subscriptions"])
 class ProtectedServiceSubscriptionViewSet(viewsets.ModelViewSet):
@@ -97,3 +116,4 @@ class ProtectedServiceSubscriptionViewSet(viewsets.ModelViewSet):
     lookup_field = 'pk'
     permission_classes = [xanym_permissions.IsAdmin]
     filter_backends = [DjangoFilterBackend]
+
