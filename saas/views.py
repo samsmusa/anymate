@@ -48,7 +48,7 @@ class ServiceSidebarView(APIView):
             subscriptions = models.Subscription.objects.filter(created_by=request.user).select_related("service")
             for subscription in subscriptions:
                 route = utils.get_routes_from_app(
-                    app_label=subscription.service.name,
+                    subscription.service.name,
                     attrib=attrib,
                     default=None
                 )
